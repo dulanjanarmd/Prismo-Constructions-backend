@@ -3,5 +3,7 @@ package com.prismo.backend.model;
 public enum ApprovalStatus {
     PENDING,
     APPROVED,
-    REJECTED
+    REJECTED,
+    CHANGES_REQUESTED,
+    CLOSED
 }

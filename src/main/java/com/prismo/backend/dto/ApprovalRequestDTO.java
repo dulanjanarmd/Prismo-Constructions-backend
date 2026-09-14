@@ -15,4 +15,5 @@ public class ApprovalRequestDTO {
     private JsonNode auditTrail;
     private String feedback;
     private String pmReply;
+    private JsonNode attachments;
 }

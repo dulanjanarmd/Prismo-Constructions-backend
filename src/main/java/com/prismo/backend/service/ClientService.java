@@ -37,11 +37,13 @@ public class ClientService {
         ApprovalRequest request = ApprovalRequest.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
+                .dueDate(dto.getDueDate())
                 .dateRequested(dto.getDateRequested() != null ? dto.getDateRequested() : LocalDate.now())
                 .status(ApprovalStatus.valueOf(dto.getStatus() != null ? dto.getStatus().toUpperCase() : "PENDING"))
                 .project(project)
                 .client(project.getClient())
                 .auditTrail(toJson(dto.getAuditTrail()))
+                .attachments(toJson(dto.getAttachments()))
                 .build();
 
         return repository.save(request);
@@ -62,6 +64,12 @@ public class ClientService {
         }
         if (dto.getPmReply() != null) {
             request.setPmReply(dto.getPmReply());
+        }
+        if (dto.getDueDate() != null) {
+            request.setDueDate(dto.getDueDate());
+        }
+        if (dto.getAttachments() != null) {
+            request.setAttachments(toJson(dto.getAttachments()));
         }
 
         return repository.save(request);

@@ -28,6 +28,8 @@ public class ApprovalRequest {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private String dueDate;
+
     private LocalDate dateRequested;
 
     @Enumerated(EnumType.STRING)
@@ -45,4 +47,7 @@ public class ApprovalRequest {
 
     @Column(columnDefinition = "TEXT")
     private String pmReply;
+
+    @Column(columnDefinition = "TEXT")
+    private String attachments;
 }
