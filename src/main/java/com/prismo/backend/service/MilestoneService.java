@@ -33,6 +33,9 @@ public class MilestoneService {
         if (updates.getName() != null) existing.setName(updates.getName());
         if (updates.getDueDate() != null) existing.setDueDate(updates.getDueDate());
         if (updates.getStatus() != null) existing.setStatus(updates.getStatus());
+        if (updates.getDescription() != null) existing.setDescription(updates.getDescription());
+        if (updates.getBudgetAllocated() != null) existing.setBudgetAllocated(updates.getBudgetAllocated());
+        if (updates.getDeliverables() != null) existing.setDeliverables(updates.getDeliverables());
         return milestoneRepository.save(existing);
     }
 

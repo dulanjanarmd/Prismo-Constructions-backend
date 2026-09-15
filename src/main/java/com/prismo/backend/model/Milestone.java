@@ -30,4 +30,11 @@ public class Milestone {
     private LocalDate dueDate;
 
     private String status;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    private Double budgetAllocated;
+
+    private String deliverables;
 }
