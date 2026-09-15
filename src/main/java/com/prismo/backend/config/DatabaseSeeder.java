@@ -38,6 +38,12 @@ public class DatabaseSeeder implements CommandLineRunner {
             System.out.println("Could not add status column to users table: " + e.getMessage());
         }
         
+        try {
+            jdbcTemplate.execute("ALTER TABLE approval_requests MODIFY status VARCHAR(50)");
+        } catch (Exception e) {
+            System.out.println("Could not alter approval_requests table status: " + e.getMessage());
+        }
+
         if (userRepository.findByEmail("admin@prismo.com").isEmpty()) {
             String defaultPassword = passwordEncoder.encode("password123");
             User admin = User.builder().name("System Admin").email("admin@prismo.com").password(defaultPassword).role(Role.ADMIN).status(UserStatus.ACTIVE).build();

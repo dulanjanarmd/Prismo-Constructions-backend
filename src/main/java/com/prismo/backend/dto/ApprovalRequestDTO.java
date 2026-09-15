@@ -16,4 +16,5 @@ public class ApprovalRequestDTO {
     private String feedback;
     private String pmReply;
     private JsonNode attachments;
+    private JsonNode linkedLogIds;
 }

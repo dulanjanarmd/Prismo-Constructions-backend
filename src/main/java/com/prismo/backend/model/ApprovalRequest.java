@@ -50,4 +50,7 @@ public class ApprovalRequest {
 
     @Column(columnDefinition = "TEXT")
     private String attachments;
+
+    @Column(columnDefinition = "TEXT")
+    private String linkedLogIds;
 }

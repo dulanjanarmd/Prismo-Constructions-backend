@@ -44,6 +44,7 @@ public class ClientService {
                 .client(project.getClient())
                 .auditTrail(toJson(dto.getAuditTrail()))
                 .attachments(toJson(dto.getAttachments()))
+                .linkedLogIds(toJson(dto.getLinkedLogIds()))
                 .build();
 
         return repository.save(request);
@@ -70,6 +71,9 @@ public class ClientService {
         }
         if (dto.getAttachments() != null) {
             request.setAttachments(toJson(dto.getAttachments()));
+        }
+        if (dto.getLinkedLogIds() != null) {
+            request.setLinkedLogIds(toJson(dto.getLinkedLogIds()));
         }
         return repository.save(request);
     }
