@@ -48,7 +48,23 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('PROJECT_MANAGER', 'SITE_ENGINEER', 'CEO')")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        Task task = new Task();
+        if (body.containsKey("title")) task.setTitle((String) body.get("title"));
+        if (body.containsKey("description")) task.setDescription((String) body.get("description"));
+        if (body.containsKey("priority")) task.setPriority((String) body.get("priority"));
+        if (body.containsKey("status") && body.get("status") != null) {
+            task.setStatus(com.prismo.backend.model.TaskStatus.valueOf((String) body.get("status")));
+        }
+        if (body.containsKey("completionEvidence")) task.setCompletionEvidence((String) body.get("completionEvidence"));
+        
+        if (body.containsKey("dueDate") && body.get("dueDate") != null) {
+            String dueDateStr = (String) body.get("dueDate");
+            if (!dueDateStr.isEmpty()) {
+                task.setDueDate(java.time.LocalDate.parse(dueDateStr));
+            }
+        }
+        
         return ResponseEntity.ok(service.updateTask(id, task));
     }
 
