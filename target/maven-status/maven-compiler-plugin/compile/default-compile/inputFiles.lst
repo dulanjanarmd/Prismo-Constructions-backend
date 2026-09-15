@@ -34,6 +34,7 @@ C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\ba
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\repository\IssueMeetingRepository.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\ProposalVersion.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\Task.java
+C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\controller\NotificationController.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\security\JwtAuthFilter.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\ApprovalRequest.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\security\JwtUtil.java
@@ -55,6 +56,7 @@ C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\ba
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\repository\ProposalVersionRepository.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\repository\TaskRepository.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\BackendApplication.java
+C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\repository\NotificationRepository.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\repository\ProgressLogRepository.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\service\InquiryService.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\repository\ProposalRepository.java
@@ -63,6 +65,7 @@ C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\ba
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\Milestone.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\dto\RegisterRequest.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\controller\TaskController.java
+C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\service\NotificationService.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\ProposalStatus.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\TaskStatus.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\ProposalDocument.java
@@ -79,6 +82,7 @@ C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\ba
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\service\SiteIssueService.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\Inquiry.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\ConsultationNote.java
+C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\model\Notification.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\service\ProjectService.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\config\DatabaseSeeder.java
 C:\Users\damin\Documents\prismo-construction\backend\src\main\java\com\prismo\backend\service\ProgressService.java

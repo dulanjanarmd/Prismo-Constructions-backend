@@ -20,6 +20,22 @@ public class GlobalMessage {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String messageText;
 
+    @ManyToOne
+    @JoinColumn(name = "recipient_id")
+    private User recipient;
+
+    @Column(name = "message_type")
+    private String messageType = "TEXT"; // TEXT, FILE, IMAGE, POLL, EVENT, LINK
+
+    @Column(name = "file_url")
+    private String fileUrl;
+
+    @Column(name = "poll_data", columnDefinition = "TEXT")
+    private String pollData;
+
+    @Column(name = "event_date")
+    private java.time.LocalDateTime eventDate;
+
     @Column(name = "created_at")
     private java.time.LocalDateTime createdAt;
 
@@ -66,5 +82,45 @@ public class GlobalMessage {
 
     public void setCreatedAt(java.time.LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public User getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getPollData() {
+        return pollData;
+    }
+
+    public void setPollData(String pollData) {
+        this.pollData = pollData;
+    }
+
+    public java.time.LocalDateTime getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(java.time.LocalDateTime eventDate) {
+        this.eventDate = eventDate;
     }
 }

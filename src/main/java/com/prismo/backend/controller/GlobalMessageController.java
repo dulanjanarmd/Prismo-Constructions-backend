@@ -30,4 +30,20 @@ public class GlobalMessageController {
         message.setProjectId(projectId);
         return ResponseEntity.ok(service.sendMessage(currentUser.getId(), message));
     }
+
+    @PutMapping("/{messageId}")
+    public ResponseEntity<GlobalMessage> updateMessage(
+            @PathVariable Long messageId,
+            @RequestBody GlobalMessage message,
+            @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(service.updateMessage(messageId, currentUser.getId(), message.getMessageText()));
+    }
+
+    @DeleteMapping("/{messageId}")
+    public ResponseEntity<Void> deleteMessage(
+            @PathVariable Long messageId,
+            @AuthenticationPrincipal User currentUser) {
+        service.deleteMessage(messageId, currentUser.getId());
+        return ResponseEntity.ok().build();
+    }
 }
