@@ -71,8 +71,11 @@ public class ClientService {
         if (dto.getAttachments() != null) {
             request.setAttachments(toJson(dto.getAttachments()));
         }
-
         return repository.save(request);
+    }
+
+    public void deleteApproval(Long id) {
+        repository.deleteById(id);
     }
 
     private String toJson(com.fasterxml.jackson.databind.JsonNode value) {

@@ -37,4 +37,11 @@ public class ClientController {
             @RequestBody com.prismo.backend.dto.ApprovalRequestDTO dto) {
         return ResponseEntity.ok(service.updateApproval(id, dto));
     }
+
+    @DeleteMapping("/approvals/{id}")
+    @PreAuthorize("hasAnyRole('CEO', 'PROJECT_MANAGER')")
+    public ResponseEntity<Void> deleteApproval(@PathVariable Long id) {
+        service.deleteApproval(id);
+        return ResponseEntity.noContent().build();
+    }
 }
