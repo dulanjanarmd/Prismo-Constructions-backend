@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface SiteIssueRepository extends JpaRepository<SiteIssue, Long> {
     List<SiteIssue> findByProjectId(Long projectId);
+    List<SiteIssue> findByTaskId(Long taskId);
 }

@@ -10,6 +10,7 @@ import com.prismo.backend.repository.UserRepository;
 import com.prismo.backend.model.Milestone;
 import com.prismo.backend.repository.MilestoneRepository;
 import com.prismo.backend.repository.ProgressLogRepository;
+import com.prismo.backend.repository.SiteIssueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class TaskService {
     private final UserRepository userRepository;
     private final MilestoneRepository milestoneRepository;
     private final ProgressLogRepository progressLogRepository;
+    private final SiteIssueRepository siteIssueRepository;
 
     public List<Task> getAllTasks() {
         return repository.findAll();
@@ -74,6 +76,11 @@ public class TaskService {
         var progressLogs = progressLogRepository.findByTaskId(id);
         progressLogs.forEach(log -> log.setTask(null));
         progressLogRepository.saveAll(progressLogs);
+        
+        var siteIssues = siteIssueRepository.findByTaskId(id);
+        siteIssues.forEach(issue -> issue.setTask(null));
+        siteIssueRepository.saveAll(siteIssues);
+        
         repository.delete(task);
     }
 }
