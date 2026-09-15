@@ -7,6 +7,10 @@ import com.prismo.backend.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import com.prismo.backend.model.Task;
+import com.prismo.backend.repository.TaskRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -15,6 +19,7 @@ public class MilestoneService {
 
     private final MilestoneRepository milestoneRepository;
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
     public List<Milestone> getMilestonesByProject(Long projectId) {
         return milestoneRepository.findByProjectId(projectId);
@@ -39,7 +44,13 @@ public class MilestoneService {
         return milestoneRepository.save(existing);
     }
 
+    @Transactional
     public void deleteMilestone(Long id) {
+        List<Task> tasks = taskRepository.findByMilestoneId(id);
+        for (Task task : tasks) {
+            task.setMilestone(null);
+            taskRepository.save(task);
+        }
         milestoneRepository.deleteById(id);
     }
 }
