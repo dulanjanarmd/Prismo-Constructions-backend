@@ -45,6 +45,7 @@ public class SiteIssue {
     private String equipmentInvolved;
     private Integer estimatedDelayDays;
     private String photoUrl;
+    private String documentUrl;
 
     @Column(name = "created_at")
     private java.time.LocalDateTime createdAt;
