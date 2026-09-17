@@ -11,6 +11,7 @@ import com.prismo.backend.model.Milestone;
 import com.prismo.backend.repository.MilestoneRepository;
 import com.prismo.backend.repository.ProgressLogRepository;
 import com.prismo.backend.repository.SiteIssueRepository;
+import com.prismo.backend.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class TaskService {
     private final MilestoneRepository milestoneRepository;
     private final ProgressLogRepository progressLogRepository;
     private final SiteIssueRepository siteIssueRepository;
+    private final NotificationService notificationService;
 
     public List<Task> getAllTasks() {
         return repository.findAll();
@@ -48,7 +50,14 @@ public class TaskService {
             task.setMilestone(milestone);
         }
         task.setStatus(TaskStatus.TO_DO);
-        return repository.save(task);
+        Task savedTask = repository.save(task);
+
+        if (savedTask.getAssignee() != null) {
+            String msg = "New task assigned: " + savedTask.getTitle();
+            notificationService.createNotification(savedTask.getAssignee().getId(), msg, "task-" + savedTask.getId());
+        }
+
+        return savedTask;
     }
 
     public Task updateTask(Long id, Task updates) {
@@ -66,7 +75,18 @@ public class TaskService {
             task.setStatus(updates.getStatus());
         if (updates.getCompletionEvidence() != null)
             task.setCompletionEvidence(updates.getCompletionEvidence());
-        return repository.save(task);
+        
+        Task savedTask = repository.save(task);
+
+        if (updates.getStatus() != null && updates.getStatus() == TaskStatus.COMPLETED) {
+            List<User> pms = userRepository.findByRole(Role.PROJECT_MANAGER);
+            for (User pm : pms) {
+                String msg = "Task Completed: " + savedTask.getTitle();
+                notificationService.createNotification(pm.getId(), msg, "task-" + savedTask.getId());
+            }
+        }
+
+        return savedTask;
     }
 
     @Transactional

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import com.prismo.backend.model.Role;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,6 +23,8 @@ public class ClientService {
     private final ApprovalRequestRepository repository;
     private final ProjectRepository projectRepository;
     private final ObjectMapper objectMapper;
+    private final NotificationService notificationService;
+    private final com.prismo.backend.repository.UserRepository userRepository;
 
     public List<ApprovalRequest> getApprovalsForUser(User user) {
         if (user.getRole() == com.prismo.backend.model.Role.CLIENT) {
@@ -47,7 +50,15 @@ public class ClientService {
                 .linkedLogIds(toJson(dto.getLinkedLogIds()))
                 .build();
 
-        return repository.save(request);
+        ApprovalRequest savedRequest = repository.save(request);
+
+        // Notify Client
+        if (savedRequest.getClient() != null) {
+            String msg = "New Approval Request: " + savedRequest.getTitle();
+            notificationService.createNotification(savedRequest.getClient().getId(), msg, "approval-" + savedRequest.getId());
+        }
+
+        return savedRequest;
     }
 
     public ApprovalRequest updateApproval(Long id, ApprovalRequestDTO dto) {
@@ -75,7 +86,19 @@ public class ClientService {
         if (dto.getLinkedLogIds() != null) {
             request.setLinkedLogIds(toJson(dto.getLinkedLogIds()));
         }
-        return repository.save(request);
+        ApprovalRequest savedRequest = repository.save(request);
+
+        // If status changed by client or PM, notify the other party
+        // For simplicity, we'll notify PMs when it's updated
+        if (dto.getStatus() != null && !dto.getStatus().equalsIgnoreCase("PENDING")) {
+            List<User> pms = userRepository.findByRole(Role.PROJECT_MANAGER);
+            for (User pm : pms) {
+                String msg = "Approval Request Updated: " + savedRequest.getTitle();
+                notificationService.createNotification(pm.getId(), msg, "approval-" + savedRequest.getId());
+            }
+        }
+        
+        return savedRequest;
     }
 
     public void deleteApproval(Long id) {

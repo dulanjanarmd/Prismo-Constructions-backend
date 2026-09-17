@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import com.prismo.backend.model.Role;
 
 @Service
 public class SiteIssueService {
@@ -25,6 +26,9 @@ public class SiteIssueService {
 
     @Autowired
     private com.prismo.backend.repository.TaskRepository taskRepository;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     public List<SiteIssue> getIssuesByProject(Long projectId) {
         return repository.findByProjectId(projectId);
@@ -52,7 +56,16 @@ public class SiteIssueService {
             issue.setStatus("OPEN");
         }
 
-        return repository.save(issue);
+        SiteIssue savedIssue = repository.save(issue);
+
+        // Notify Project Managers
+        List<User> pms = userRepository.findByRole(Role.PROJECT_MANAGER);
+        for (User pm : pms) {
+            String msg = "New Site Issue logged: " + savedIssue.getTitle();
+            notificationService.createNotification(pm.getId(), msg, "issue-" + savedIssue.getId());
+        }
+
+        return savedIssue;
     }
 
     public SiteIssue updateIssueStatus(Long issueId, String status, Long assigneeId) {

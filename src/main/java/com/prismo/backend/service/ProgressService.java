@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import com.prismo.backend.model.Role;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ProgressService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final NotificationService notificationService;
 
     public List<ProgressLog> getAllLogs() {
         return repository.findAll();
@@ -45,7 +47,15 @@ public class ProgressService {
         if (log.getPhotos() != null) {
             log.getPhotos().forEach(photo -> photo.setProgressLog(log));
         }
-        return repository.save(log);
+        ProgressLog savedLog = repository.save(log);
+
+        List<User> pms = userRepository.findByRole(Role.PROJECT_MANAGER);
+        for (User pm : pms) {
+            String msg = "New Progress Log submitted for " + project.getName();
+            notificationService.createNotification(pm.getId(), msg, "log-" + savedLog.getId());
+        }
+
+        return savedLog;
     }
 
     public ProgressLog updateLog(Long logId, Long taskId, ProgressLog updatedLog) {

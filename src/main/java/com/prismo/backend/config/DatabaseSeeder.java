@@ -67,7 +67,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             User engineer = User.builder().name("Site Engineer A").email("engineer@prismo.com").password(defaultPassword).role(Role.SITE_ENGINEER).status(UserStatus.ACTIVE).build();
             User client = User.builder().name("Client Corp").email("client@company.com").password(defaultPassword).role(Role.CLIENT).status(UserStatus.ACTIVE).build();
 
-            userRepository.saveAll(List.of(ceo, admin, pm, engineer, client));
+            try {
+                userRepository.saveAll(List.of(ceo, admin, pm, engineer, client));
+            } catch (Exception e) {
+                System.out.println("Could not seed users: " + e.getMessage());
+            }
 
             Project p1 = Project.builder()
                     .name("Colombo Commercial Complex")
