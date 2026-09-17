@@ -29,6 +29,18 @@ public class InquiryService {
                 .description(request.getInitialNotes())
                 .status(InquiryStatus.NEW)
                 .build();
+                
+        // Auto-assign to a Project Manager, or CEO if no PM is available
+        List<User> pms = userRepository.findByRole(Role.PROJECT_MANAGER);
+        if (pms != null && !pms.isEmpty()) {
+            inquiry.setAssignedTo(pms.get(0));
+        } else {
+            List<User> ceos = userRepository.findByRole(Role.CEO);
+            if (ceos != null && !ceos.isEmpty()) {
+                inquiry.setAssignedTo(ceos.get(0));
+            }
+        }
+
         return inquiryRepository.save(inquiry);
     }
 
