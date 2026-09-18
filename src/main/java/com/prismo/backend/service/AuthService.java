@@ -75,7 +75,7 @@ public class AuthService {
                 .build();
     }
 
-    public void forgotPassword(ForgotPasswordRequest request) {
+    public String forgotPassword(ForgotPasswordRequest request) {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + request.getEmail()));
         
@@ -85,6 +85,7 @@ public class AuthService {
         repository.save(user);
 
         emailService.sendPasswordResetOtp(user.getEmail(), otp);
+        return otp;
     }
 
     public void resetPassword(ResetPasswordRequest request) {
