@@ -26,6 +26,10 @@ public class Project {
     @JoinColumn(name = "client_id")
     private User client;
 
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User manager;
+
     private String location;
 
     private LocalDate startDate;

@@ -34,6 +34,10 @@ public class ProjectService {
         return repository.findByClientId(clientId);
     }
 
+    public List<Project> getProjectsByManagerId(Long managerId) {
+        return repository.findByManagerId(managerId);
+    }
+
     public Project getProjectById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
     }
