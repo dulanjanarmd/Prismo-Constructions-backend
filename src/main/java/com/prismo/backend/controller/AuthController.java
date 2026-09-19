@@ -25,8 +25,8 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody com.prismo.backend.dto.ForgotPasswordRequest request) {
         try {
-            String otp = service.forgotPassword(request);
-            return ResponseEntity.ok("OTP: " + otp);
+            service.forgotPassword(request);
+            return ResponseEntity.ok("OTP sent to your email successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
