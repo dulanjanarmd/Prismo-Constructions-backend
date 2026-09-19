@@ -24,6 +24,8 @@ public class ProjectController {
     public ResponseEntity<List<Project>> getAllProjects(@AuthenticationPrincipal User currentUser) {
         if (currentUser.getRole() == Role.CLIENT) {
             return ResponseEntity.ok(service.getProjectsByClientId(currentUser.getId()));
+        } else if (currentUser.getRole() == Role.PROJECT_MANAGER) {
+            return ResponseEntity.ok(service.getProjectsByManagerId(currentUser.getId()));
         }
         return ResponseEntity.ok(service.getAllProjects());
     }
@@ -36,7 +38,8 @@ public class ProjectController {
 
     @PostMapping
     @PreAuthorize("hasRole('PROJECT_MANAGER')")
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@RequestBody Project project, @AuthenticationPrincipal User currentUser) {
+        project.setManager(currentUser);
         return ResponseEntity.ok(service.createProject(project));
     }
 
