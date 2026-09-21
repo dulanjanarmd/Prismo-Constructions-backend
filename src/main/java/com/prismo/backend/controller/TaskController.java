@@ -18,9 +18,9 @@ public class TaskController {
     private final TaskService service;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('CEO', 'PROJECT_MANAGER', 'SITE_ENGINEER')")
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(service.getAllTasks());
+    @PreAuthorize("hasAnyRole('CEO', 'PROJECT_MANAGER', 'SITE_ENGINEER', 'CLIENT')")
+    public ResponseEntity<List<Task>> getAllTasks(@org.springframework.security.core.annotation.AuthenticationPrincipal com.prismo.backend.model.User currentUser) {
+        return ResponseEntity.ok(service.getAllTasks(currentUser));
     }
 
     @GetMapping("/project/{projectId}")

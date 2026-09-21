@@ -11,4 +11,7 @@ public interface ProgressLogRepository extends JpaRepository<ProgressLog, Long> 
     List<ProgressLog> findByProjectId(Long projectId);
 
     List<ProgressLog> findByTaskId(Long taskId);
+    List<ProgressLog> findByProjectManagerId(Long managerId);
+    List<ProgressLog> findByProjectClientId(Long clientId);
+    List<ProgressLog> findBySiteEngineerId(Long engineerId);
 }

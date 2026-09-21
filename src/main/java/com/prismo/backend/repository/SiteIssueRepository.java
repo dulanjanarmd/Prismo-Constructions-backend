@@ -10,4 +10,7 @@ import java.util.List;
 public interface SiteIssueRepository extends JpaRepository<SiteIssue, Long> {
     List<SiteIssue> findByProjectId(Long projectId);
     List<SiteIssue> findByTaskId(Long taskId);
+    List<SiteIssue> findByProjectManagerId(Long managerId);
+    List<SiteIssue> findByProjectClientId(Long clientId);
+    List<SiteIssue> findByReportedById(Long reporterId);
 }

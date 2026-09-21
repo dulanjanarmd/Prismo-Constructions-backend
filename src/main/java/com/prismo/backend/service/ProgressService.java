@@ -24,7 +24,14 @@ public class ProgressService {
     private final TaskRepository taskRepository;
     private final NotificationService notificationService;
 
-    public List<ProgressLog> getAllLogs() {
+    public List<ProgressLog> getAllLogs(User currentUser) {
+        if (currentUser.getRole() == Role.PROJECT_MANAGER) {
+            return repository.findByProjectManagerId(currentUser.getId());
+        } else if (currentUser.getRole() == Role.CLIENT) {
+            return repository.findByProjectClientId(currentUser.getId());
+        } else if (currentUser.getRole() == Role.SITE_ENGINEER) {
+            return repository.findBySiteEngineerId(currentUser.getId());
+        }
         return repository.findAll();
     }
 

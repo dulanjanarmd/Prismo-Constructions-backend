@@ -19,9 +19,9 @@ public class ProgressController {
     private final ProgressService service;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('CEO', 'PROJECT_MANAGER', 'SITE_ENGINEER')")
-    public ResponseEntity<List<ProgressLog>> getAllLogs() {
-        return ResponseEntity.ok(service.getAllLogs());
+    @PreAuthorize("hasAnyRole('CEO', 'PROJECT_MANAGER', 'SITE_ENGINEER', 'CLIENT')")
+    public ResponseEntity<List<ProgressLog>> getAllLogs(@org.springframework.security.core.annotation.AuthenticationPrincipal com.prismo.backend.model.User currentUser) {
+        return ResponseEntity.ok(service.getAllLogs(currentUser));
     }
 
     @GetMapping("/project/{projectId}")

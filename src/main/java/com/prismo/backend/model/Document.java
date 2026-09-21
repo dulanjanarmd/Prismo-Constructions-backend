@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "documents")
@@ -34,4 +36,7 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "uploaded_by_id")
     private User uploadedBy;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

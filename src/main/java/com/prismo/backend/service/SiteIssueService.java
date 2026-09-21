@@ -34,7 +34,14 @@ public class SiteIssueService {
         return repository.findByProjectId(projectId);
     }
 
-    public List<SiteIssue> getAllIssues() {
+    public List<SiteIssue> getAllIssues(User currentUser) {
+        if (currentUser.getRole() == Role.PROJECT_MANAGER) {
+            return repository.findByProjectManagerId(currentUser.getId());
+        } else if (currentUser.getRole() == Role.CLIENT) {
+            return repository.findByProjectClientId(currentUser.getId());
+        } else if (currentUser.getRole() == Role.SITE_ENGINEER) {
+            return repository.findByReportedById(currentUser.getId());
+        }
         return repository.findAll();
     }
 

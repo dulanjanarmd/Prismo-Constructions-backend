@@ -19,11 +19,14 @@ public class SiteIssueController {
     private SiteIssueService service;
 
     @GetMapping
-    public ResponseEntity<List<SiteIssue>> getIssues(@RequestParam(required = false) Long projectId) {
+    @PreAuthorize("hasAnyRole('CEO', 'PROJECT_MANAGER', 'SITE_ENGINEER', 'CLIENT')")
+    public ResponseEntity<List<SiteIssue>> getAllIssues(
+            @RequestParam(required = false) Long projectId,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.prismo.backend.model.User currentUser) {
         if (projectId != null) {
             return ResponseEntity.ok(service.getIssuesByProject(projectId));
         }
-        return ResponseEntity.ok(service.getAllIssues());
+        return ResponseEntity.ok(service.getAllIssues(currentUser));
     }
 
     @PostMapping

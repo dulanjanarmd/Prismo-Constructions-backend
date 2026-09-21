@@ -28,7 +28,9 @@ public class ClientService {
 
     public List<ApprovalRequest> getApprovalsForUser(User user) {
         if (user.getRole() == com.prismo.backend.model.Role.CLIENT) {
-            return repository.findByClientId(user.getId());
+            return repository.findByProjectClientId(user.getId());
+        } else if (user.getRole() == com.prismo.backend.model.Role.PROJECT_MANAGER) {
+            return repository.findByProjectManagerId(user.getId());
         }
         return repository.findAll();
     }

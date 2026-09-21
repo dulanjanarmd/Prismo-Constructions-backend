@@ -2,6 +2,7 @@ package com.prismo.backend.dto;
 
 import lombok.Builder;
 import lombok.Value;
+import java.time.LocalDateTime;
 
 @Value
 @Builder
@@ -12,4 +13,5 @@ public class DocumentResponse {
     String category;
     String note;
     String uploadedBy;
+    LocalDateTime createdAt;
 }

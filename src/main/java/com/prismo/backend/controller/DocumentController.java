@@ -75,6 +75,7 @@ public class DocumentController {
                 .category(document.getCategory())
                 .note(document.getNote())
                 .uploadedBy(document.getUploadedBy() == null ? null : document.getUploadedBy().getName())
+                .createdAt(document.getCreatedAt())
                 .build();
     }
 

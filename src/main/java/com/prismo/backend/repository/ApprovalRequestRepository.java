@@ -10,4 +10,6 @@ import java.util.List;
 public interface ApprovalRequestRepository extends JpaRepository<ApprovalRequest, Long> {
     List<ApprovalRequest> findByProjectId(Long projectId);
     List<ApprovalRequest> findByClientId(Long clientId);
+    List<ApprovalRequest> findByProjectManagerId(Long managerId);
+    List<ApprovalRequest> findByProjectClientId(Long clientId);
 }
