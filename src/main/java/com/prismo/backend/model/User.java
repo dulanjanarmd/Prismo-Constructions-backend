@@ -40,6 +40,9 @@ public class User implements UserDetails {
     @Column(length = 20)
     private UserStatus status;
 
+    private String profilePictureUrl;
+    private String phone;
+
     private String resetOtp;
     private java.time.LocalDateTime otpExpiryTime;
 
