@@ -40,6 +40,7 @@ public class User implements UserDetails {
     @Column(length = 20)
     private UserStatus status;
 
+    @Column(columnDefinition = "TEXT")
     private String profilePictureUrl;
     private String phone;
 
