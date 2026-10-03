@@ -44,7 +44,10 @@ public class SiteIssue {
     private String location;
     private String equipmentInvolved;
     private Integer estimatedDelayDays;
+    @Column(columnDefinition = "TEXT")
     private String photoUrl;
+    
+    @Column(columnDefinition = "TEXT")
     private String documentUrl;
 
     @Column(name = "created_at")
