@@ -33,6 +33,7 @@ public class IssueComment {
 
     private String commentType; // GENERAL, INFO_REQUEST, SOLUTION
 
+    @Column(columnDefinition = "TEXT")
     private String photoUrl;
 
     @Column(name = "created_at")

@@ -102,6 +102,8 @@ public class SiteIssueService {
         if(updatedData.getLocation() != null) issue.setLocation(updatedData.getLocation());
         if(updatedData.getEquipmentInvolved() != null) issue.setEquipmentInvolved(updatedData.getEquipmentInvolved());
         if(updatedData.getEstimatedDelayDays() != null) issue.setEstimatedDelayDays(updatedData.getEstimatedDelayDays());
+        if(updatedData.getPhotoUrl() != null) issue.setPhotoUrl(updatedData.getPhotoUrl());
+        if(updatedData.getDocumentUrl() != null) issue.setDocumentUrl(updatedData.getDocumentUrl());
         return repository.save(issue);
     }
 

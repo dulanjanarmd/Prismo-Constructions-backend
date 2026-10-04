@@ -67,7 +67,7 @@ public class TaskService {
         return savedTask;
     }
 
-    public Task updateTask(Long id, Task updates) {
+    public Task updateTask(Long id, Task updates, Long assigneeId) {
         Task task = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
         if (updates.getTitle() != null)
@@ -82,6 +82,17 @@ public class TaskService {
             task.setStatus(updates.getStatus());
         if (updates.getCompletionEvidence() != null)
             task.setCompletionEvidence(updates.getCompletionEvidence());
+            
+        if (assigneeId != null) {
+            User assignee = userRepository.findById(assigneeId).orElse(null);
+            if (assignee != null) {
+                task.setAssignee(assignee);
+                
+                // Notify the new assignee
+                String msg = "You have been assigned to task: " + task.getTitle();
+                notificationService.createNotification(assignee.getId(), msg, "task-" + task.getId());
+            }
+        }
         
         Task savedTask = repository.save(task);
 

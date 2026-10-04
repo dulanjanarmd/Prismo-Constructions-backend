@@ -64,8 +64,17 @@ public class TaskController {
                 task.setDueDate(java.time.LocalDate.parse(dueDateStr));
             }
         }
+        Long assigneeId = null;
+        if (body.containsKey("assignedTo") && body.get("assignedTo") != null) {
+            String assignedToStr = body.get("assignedTo").toString();
+            // Handle prefix 'u' if passed from frontend
+            if (assignedToStr.startsWith("u")) {
+                assignedToStr = assignedToStr.substring(1);
+            }
+            assigneeId = Long.valueOf(assignedToStr);
+        }
         
-        return ResponseEntity.ok(service.updateTask(id, task));
+        return ResponseEntity.ok(service.updateTask(id, task, assigneeId));
     }
 
     @DeleteMapping("/{id}")
