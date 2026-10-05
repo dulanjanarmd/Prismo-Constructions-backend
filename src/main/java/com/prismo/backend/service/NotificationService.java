@@ -44,4 +44,20 @@ public class NotificationService {
             notificationRepository.save(notification);
         }
     }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteNotification(Long notificationId, Long userId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+        
+        if (!notification.getRecipient().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+        notificationRepository.delete(notification);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void clearAllNotifications(Long userId) {
+        notificationRepository.deleteByRecipientId(userId);
+    }
 }

@@ -28,4 +28,19 @@ public class NotificationController {
             @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(notificationService.markAsRead(id, currentUser.getId()));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteNotification(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User currentUser) {
+        notificationService.deleteNotification(id, currentUser.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<?> clearAllNotifications(
+            @AuthenticationPrincipal User currentUser) {
+        notificationService.clearAllNotifications(currentUser.getId());
+        return ResponseEntity.ok().build();
+    }
 }
