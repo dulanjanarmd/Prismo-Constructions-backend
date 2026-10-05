@@ -37,4 +37,14 @@ public class Milestone {
     private Double budgetAllocated;
 
     private String deliverables;
+
+    private LocalDate startDate;
+
+    private String category;
+
+    private String subcontractor;
+
+    private Boolean inspectionRequired;
+
+    private String paymentStatus;
 }
