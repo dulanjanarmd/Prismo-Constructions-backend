@@ -3,8 +3,7 @@ package com.prismo.backend.service;
 import com.prismo.backend.dto.AuthRequest;
 import com.prismo.backend.dto.AuthResponse;
 import com.prismo.backend.dto.RegisterRequest;
-import com.prismo.backend.dto.ResetPasswordRequest;
-import com.prismo.backend.dto.ForgotPasswordRequest;
+
 import com.prismo.backend.model.Role;
 import com.prismo.backend.model.User;
 import com.prismo.backend.repository.UserRepository;
@@ -15,8 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -83,33 +80,5 @@ public class AuthService {
                 .build();
     }
 
-    public void forgotPassword(ForgotPasswordRequest request) {
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + request.getEmail()));
-        
-        String otp = String.format("%06d", new Random().nextInt(999999));
-        user.setResetOtp(otp);
-        user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(10));
-        repository.save(user);
 
-        emailService.sendPasswordResetOtp(user.getEmail(), otp);
-    }
-
-    public void resetPassword(ResetPasswordRequest request) {
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + request.getEmail()));
-        
-        if (user.getResetOtp() == null || !user.getResetOtp().equals(request.getOtp())) {
-            throw new IllegalArgumentException("Invalid OTP");
-        }
-        
-        if (user.getOtpExpiryTime() != null && user.getOtpExpiryTime().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("OTP has expired");
-        }
-        
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        user.setResetOtp(null);
-        user.setOtpExpiryTime(null);
-        repository.save(user);
-    }
 }
