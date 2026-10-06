@@ -17,4 +17,6 @@ public class AuthResponse {
     private String role;
     private String phone;
     private String profilePictureUrl;
+    private String nic;
+    private String address;
 }

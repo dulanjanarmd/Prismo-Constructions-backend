@@ -43,6 +43,8 @@ public class User implements UserDetails {
     @Column(columnDefinition = "TEXT")
     private String profilePictureUrl;
     private String phone;
+    private String nic;
+    private String address;
 
     private String resetOtp;
     private java.time.LocalDateTime otpExpiryTime;

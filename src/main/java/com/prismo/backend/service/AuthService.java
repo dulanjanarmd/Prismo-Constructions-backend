@@ -55,6 +55,8 @@ public class AuthService {
                 .role(user.getRole().name())
                 .phone(user.getPhone())
                 .profilePictureUrl(user.getProfilePictureUrl())
+                .nic(user.getNic())
+                .address(user.getAddress())
                 .build();
     }
 
@@ -76,6 +78,8 @@ public class AuthService {
                 .role(user.getRole().name())
                 .phone(user.getPhone())
                 .profilePictureUrl(user.getProfilePictureUrl())
+                .nic(user.getNic())
+                .address(user.getAddress())
                 .build();
     }
 
