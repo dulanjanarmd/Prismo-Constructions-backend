@@ -54,7 +54,6 @@ com\prismo\backend\model\IssueComment$IssueCommentBuilder.class
 com\prismo\backend\repository\TaskRepository.class
 com\prismo\backend\repository\NotificationRepository.class
 com\prismo\backend\repository\ProposalVersionRepository.class
-com\prismo\backend\service\GlobalMessageService.class
 com\prismo\backend\dto\ResetPasswordRequest.class
 com\prismo\backend\repository\MilestoneRepository.class
 com\prismo\backend\dto\ForgotPasswordRequest$ForgotPasswordRequestBuilder.class
@@ -75,7 +74,6 @@ com\prismo\backend\controller\AdminController.class
 com\prismo\backend\model\ApprovalRequest.class
 com\prismo\backend\repository\PhotoRepository.class
 com\prismo\backend\model\Milestone$MilestoneBuilder.class
-com\prismo\backend\controller\GlobalMessageController.class
 com\prismo\backend\model\Notification.class
 com\prismo\backend\dto\AuthRequest$AuthRequestBuilder.class
 com\prismo\backend\security\UserDetailsServiceImpl.class
@@ -91,7 +89,6 @@ com\prismo\backend\service\AdminService.class
 com\prismo\backend\controller\ClientController.class
 com\prismo\backend\dto\PasswordResetRequest$PasswordResetRequestBuilder.class
 com\prismo\backend\model\InquiryStatus.class
-com\prismo\backend\model\GlobalMessage.class
 com\prismo\backend\service\NotificationService.class
 com\prismo\backend\model\User.class
 com\prismo\backend\model\ProposalResponse$ProposalResponseBuilder.class
@@ -108,7 +105,6 @@ com\prismo\backend\model\Document$DocumentBuilder.class
 com\prismo\backend\dto\CreateUserRequest.class
 com\prismo\backend\service\InquiryService.class
 com\prismo\backend\controller\UserController.class
-com\prismo\backend\repository\GlobalMessageRepository.class
 com\prismo\backend\model\IssueMeeting$IssueMeetingBuilder.class
 com\prismo\backend\model\ProgressLog$ProgressLogBuilder.class
 com\prismo\backend\dto\AuthRequest.class
