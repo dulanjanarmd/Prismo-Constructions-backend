@@ -18,6 +18,7 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final jakarta.persistence.EntityManager entityManager;
 
     public User createUser(CreateUserRequest request) {
         if (request.getRole() == Role.ADMIN) {
@@ -92,6 +93,7 @@ public class AdminService {
         return userRepository.save(user);
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -103,6 +105,26 @@ public class AdminService {
         if (user.getRole() == Role.CEO) {
             throw new IllegalArgumentException("Cannot delete CEO users");
         }
+
+        // Unlink user from associated entities to prevent foreign key constraint violations
+        entityManager.createQuery("UPDATE ApprovalRequest a SET a.client = null WHERE a.client = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Budget b SET b.createdBy = null WHERE b.createdBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE ConsultationNote c SET c.createdBy = null WHERE c.createdBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Document d SET d.uploadedBy = null WHERE d.uploadedBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Inquiry i SET i.assignedTo = null WHERE i.assignedTo = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Inquiry i SET i.createdBy = null WHERE i.createdBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE IssueComment i SET i.sender = null WHERE i.sender = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE IssueMeeting i SET i.organizer = null WHERE i.organizer = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("DELETE FROM Notification n WHERE n.recipient = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE ProgressLog p SET p.siteEngineer = null WHERE p.siteEngineer = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Project p SET p.client = null WHERE p.client = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Project p SET p.manager = null WHERE p.manager = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Proposal p SET p.createdBy = null WHERE p.createdBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE ProposalDocument p SET p.uploadedBy = null WHERE p.uploadedBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE ProposalResponse p SET p.respondedBy = null WHERE p.respondedBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE SiteIssue s SET s.reportedBy = null WHERE s.reportedBy = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE SiteIssue s SET s.assignee = null WHERE s.assignee = :user").setParameter("user", user).executeUpdate();
+        entityManager.createQuery("UPDATE Task t SET t.assignee = null WHERE t.assignee = :user").setParameter("user", user).executeUpdate();
         
         userRepository.delete(user);
     }

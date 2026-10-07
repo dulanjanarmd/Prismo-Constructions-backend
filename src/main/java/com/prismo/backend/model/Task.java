@@ -43,4 +43,7 @@ public class Task {
     private TaskStatus status;
 
     private String completionEvidence;
+
+    @Column(columnDefinition = "TEXT")
+    private String comments;
 }

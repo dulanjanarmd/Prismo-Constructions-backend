@@ -82,6 +82,8 @@ public class TaskService {
             task.setStatus(updates.getStatus());
         if (updates.getCompletionEvidence() != null)
             task.setCompletionEvidence(updates.getCompletionEvidence());
+        if (updates.getComments() != null)
+            task.setComments(updates.getComments());
             
         if (assigneeId != null) {
             User assignee = userRepository.findById(assigneeId).orElse(null);

@@ -57,6 +57,7 @@ public class TaskController {
             task.setStatus(com.prismo.backend.model.TaskStatus.valueOf((String) body.get("status")));
         }
         if (body.containsKey("completionEvidence")) task.setCompletionEvidence((String) body.get("completionEvidence"));
+        if (body.containsKey("comments")) task.setComments((String) body.get("comments"));
         
         if (body.containsKey("dueDate") && body.get("dueDate") != null) {
             String dueDateStr = (String) body.get("dueDate");
