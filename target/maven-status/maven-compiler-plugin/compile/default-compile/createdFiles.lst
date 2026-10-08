@@ -32,7 +32,6 @@ com\prismo\backend\repository\BudgetRepository.class
 com\prismo\backend\model\ApprovalStatus.class
 com\prismo\backend\controller\SiteIssueController.class
 com\prismo\backend\dto\PasswordResetRequest.class
-com\prismo\backend\controller\DebugController.class
 com\prismo\backend\model\Budget$BudgetBuilder.class
 com\prismo\backend\dto\DocumentResponse.class
 com\prismo\backend\model\Milestone.class

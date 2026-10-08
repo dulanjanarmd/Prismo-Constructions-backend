@@ -46,10 +46,8 @@ public class MilestoneService {
 
     @Transactional
     public void deleteMilestone(Long id) {
-        List<Task> tasks = taskRepository.findByMilestoneId(id);
-        for (Task task : tasks) {
-            task.setMilestone(null);
-            taskRepository.save(task);
+        if (!taskRepository.findByMilestoneId(id).isEmpty()) {
+            throw new RuntimeException("Cannot delete milestone because it is linked to one or more tasks.");
         }
         milestoneRepository.deleteById(id);
     }

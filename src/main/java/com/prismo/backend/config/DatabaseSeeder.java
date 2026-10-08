@@ -44,6 +44,12 @@ public class DatabaseSeeder implements CommandLineRunner {
             System.out.println("Could not alter approval_requests table status: " + e.getMessage());
         }
 
+        try {
+            jdbcTemplate.execute("DROP TABLE IF EXISTS global_messages");
+        } catch (Exception e) {
+            System.out.println("Could not drop global_messages table: " + e.getMessage());
+        }
+
         if (userRepository.findByEmail("admin@prismo.com").isEmpty()) {
             String defaultPassword = passwordEncoder.encode("password123");
             User admin = User.builder().name("System Admin").email("admin@prismo.com").password(defaultPassword).role(Role.ADMIN).status(UserStatus.ACTIVE).build();
