@@ -4,6 +4,7 @@ import com.prismo.backend.model.Milestone;
 import com.prismo.backend.model.Project;
 import com.prismo.backend.repository.MilestoneRepository;
 import com.prismo.backend.repository.ProjectRepository;
+import com.prismo.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class MilestoneService {
     private final MilestoneRepository milestoneRepository;
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
+    private final NotificationService notificationService;
 
     public List<Milestone> getMilestonesByProject(Long projectId) {
         return milestoneRepository.findByProjectId(projectId);
@@ -29,7 +31,17 @@ public class MilestoneService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         milestone.setProject(project);
-        return milestoneRepository.save(milestone);
+        Milestone savedMilestone = milestoneRepository.save(milestone);
+
+        if (project.getClient() != null && project.getClient().getId() != null) {
+            notificationService.createNotification(
+                    project.getClient().getId(),
+                    "A new milestone '" + savedMilestone.getName() + "' has been added to your project '" + project.getName() + "'.",
+                    "project-" + project.getId()
+            );
+        }
+
+        return savedMilestone;
     }
 
     public Milestone updateMilestone(Long id, Milestone updates) {
