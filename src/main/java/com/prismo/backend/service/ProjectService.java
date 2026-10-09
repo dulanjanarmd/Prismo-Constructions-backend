@@ -8,6 +8,7 @@ import com.prismo.backend.repository.SiteIssueRepository;
 import com.prismo.backend.repository.ProgressLogRepository;
 import com.prismo.backend.repository.DocumentRepository;
 import com.prismo.backend.repository.UserRepository;
+import com.prismo.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class ProjectService {
     private final ProgressLogRepository logRepository;
     private final DocumentRepository documentRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public List<Project> getAllProjects() {
         return repository.findAll();
@@ -46,7 +48,17 @@ public class ProjectService {
         if (project.getMilestones() != null) {
             project.getMilestones().forEach(m -> m.setProject(project));
         }
-        return repository.save(project);
+        Project savedProject = repository.save(project);
+
+        if (savedProject.getClient() != null && savedProject.getClient().getId() != null) {
+            notificationService.createNotification(
+                    savedProject.getClient().getId(),
+                    "A new project '" + savedProject.getName() + "' has been created for you.",
+                    "project-" + savedProject.getId()
+            );
+        }
+
+        return savedProject;
     }
 
     public Project updateProject(Long id, Project projectDetails) {
