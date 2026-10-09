@@ -65,6 +65,8 @@ public class TaskService {
             notificationService.createNotification(savedTask.getAssignee().getId(), msg, "project-" + savedTask.getProject().getId() + "-tasks");
         }
 
+        evaluateProjectAndMilestoneStatus(project);
+
         return savedTask;
     }
 
@@ -81,15 +83,6 @@ public class TaskService {
             task.setDueDate(updates.getDueDate());
         if (updates.getStatus() != null) {
             task.setStatus(updates.getStatus());
-            
-            if (updates.getStatus() == TaskStatus.IN_PROGRESS || updates.getStatus() == TaskStatus.COMPLETED) {
-                Project project = task.getProject();
-                if (project != null && 
-                    (project.getStatus() == ProjectStatus.NOT_STARTED || project.getStatus() == ProjectStatus.PLANNING)) {
-                    project.setStatus(ProjectStatus.IN_PROGRESS);
-                    projectRepository.save(project);
-                }
-            }
         }
         if (updates.getCompletionEvidence() != null)
             task.setCompletionEvidence(updates.getCompletionEvidence());
@@ -117,6 +110,8 @@ public class TaskService {
             }
         }
 
+        evaluateProjectAndMilestoneStatus(savedTask.getProject());
+
         return savedTask;
     }
 
@@ -133,5 +128,66 @@ public class TaskService {
         siteIssueRepository.saveAll(siteIssues);
         
         repository.delete(task);
+        evaluateProjectAndMilestoneStatus(task.getProject());
+    }
+
+    private void evaluateProjectAndMilestoneStatus(Project project) {
+        if (project == null) return;
+        List<Task> projectTasks = repository.findByProjectId(project.getId());
+        List<Milestone> projectMilestones = milestoneRepository.findByProjectId(project.getId());
+        
+        for (Milestone milestone : projectMilestones) {
+            List<Task> milestoneTasks = repository.findByMilestoneId(milestone.getId());
+            if (!milestoneTasks.isEmpty()) {
+                boolean allTasksCompleted = true;
+                for (Task t : milestoneTasks) {
+                    if (t.getStatus() != TaskStatus.COMPLETED) {
+                        allTasksCompleted = false;
+                        break;
+                    }
+                }
+                if (allTasksCompleted) {
+                    milestone.setStatus("Completed");
+                } else {
+                    if ("Completed".equals(milestone.getStatus())) {
+                        milestone.setStatus("Incomplete");
+                    }
+                }
+                milestoneRepository.save(milestone);
+            }
+        }
+        
+        boolean hasInProgress = false;
+        boolean hasCompleted = false;
+        boolean allProjectTasksCompleted = true;
+        
+        if (projectTasks.isEmpty()) {
+            allProjectTasksCompleted = false;
+        } else {
+            for (Task t : projectTasks) {
+                if (t.getStatus() == TaskStatus.IN_PROGRESS || t.getStatus() == TaskStatus.REOPENED) {
+                    hasInProgress = true;
+                    allProjectTasksCompleted = false;
+                } else if (t.getStatus() == TaskStatus.TO_DO) {
+                    allProjectTasksCompleted = false;
+                } else if (t.getStatus() == TaskStatus.COMPLETED) {
+                    hasCompleted = true;
+                }
+            }
+        }
+        
+        boolean anyMilestoneCompleted = projectMilestones.stream().anyMatch(m -> "Completed".equals(m.getStatus()));
+        boolean allMilestonesCompletedFinal = !projectMilestones.isEmpty() && projectMilestones.stream().allMatch(m -> "Completed".equals(m.getStatus()));
+        
+        if (project.getStatus() != ProjectStatus.CANCELLED && project.getStatus() != ProjectStatus.ON_HOLD) {
+            if (allProjectTasksCompleted && (projectMilestones.isEmpty() || allMilestonesCompletedFinal)) {
+                project.setStatus(ProjectStatus.COMPLETED);
+            } else if (hasInProgress || anyMilestoneCompleted || (hasCompleted && !allProjectTasksCompleted)) {
+                project.setStatus(ProjectStatus.IN_PROGRESS);
+            } else {
+                project.setStatus(ProjectStatus.PLANNING);
+            }
+            projectRepository.save(project);
+        }
     }
 }
