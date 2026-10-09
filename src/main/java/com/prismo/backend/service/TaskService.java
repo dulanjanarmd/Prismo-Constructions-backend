@@ -3,6 +3,7 @@ package com.prismo.backend.service;
 import com.prismo.backend.model.Project;
 import com.prismo.backend.model.Task;
 import com.prismo.backend.model.TaskStatus;
+import com.prismo.backend.model.ProjectStatus;
 import com.prismo.backend.model.User;
 import com.prismo.backend.repository.ProjectRepository;
 import com.prismo.backend.repository.TaskRepository;
@@ -61,7 +62,7 @@ public class TaskService {
 
         if (savedTask.getAssignee() != null) {
             String msg = "New task assigned: " + savedTask.getTitle();
-            notificationService.createNotification(savedTask.getAssignee().getId(), msg, "task-" + savedTask.getId());
+            notificationService.createNotification(savedTask.getAssignee().getId(), msg, "project-" + savedTask.getProject().getId() + "-tasks");
         }
 
         return savedTask;
@@ -78,8 +79,18 @@ public class TaskService {
             task.setPriority(updates.getPriority());
         if (updates.getDueDate() != null)
             task.setDueDate(updates.getDueDate());
-        if (updates.getStatus() != null)
+        if (updates.getStatus() != null) {
             task.setStatus(updates.getStatus());
+            
+            if (updates.getStatus() == TaskStatus.IN_PROGRESS || updates.getStatus() == TaskStatus.COMPLETED) {
+                Project project = task.getProject();
+                if (project != null && 
+                    (project.getStatus() == ProjectStatus.NOT_STARTED || project.getStatus() == ProjectStatus.PLANNING)) {
+                    project.setStatus(ProjectStatus.IN_PROGRESS);
+                    projectRepository.save(project);
+                }
+            }
+        }
         if (updates.getCompletionEvidence() != null)
             task.setCompletionEvidence(updates.getCompletionEvidence());
         if (updates.getComments() != null)
@@ -92,7 +103,7 @@ public class TaskService {
                 
                 // Notify the new assignee
                 String msg = "You have been assigned to task: " + task.getTitle();
-                notificationService.createNotification(assignee.getId(), msg, "task-" + task.getId());
+                notificationService.createNotification(assignee.getId(), msg, "project-" + task.getProject().getId() + "-tasks");
             }
         }
         
