@@ -70,7 +70,7 @@ public class TaskService {
         return savedTask;
     }
 
-    public Task updateTask(Long id, Task updates, Long assigneeId) {
+    public Task updateTask(Long id, Task updates, Long assigneeId, Long milestoneId) {
         Task task = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
         if (updates.getTitle() != null)
@@ -98,6 +98,11 @@ public class TaskService {
                 String msg = "You have been assigned to task: " + task.getTitle();
                 notificationService.createNotification(assignee.getId(), msg, "project-" + task.getProject().getId() + "-tasks");
             }
+        }
+
+        if (milestoneId != null) {
+            Milestone milestone = milestoneRepository.findById(milestoneId).orElse(null);
+            task.setMilestone(milestone);
         }
         
         Task savedTask = repository.save(task);

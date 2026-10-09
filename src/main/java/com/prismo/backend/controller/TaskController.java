@@ -75,7 +75,16 @@ public class TaskController {
             assigneeId = Long.valueOf(assignedToStr);
         }
         
-        return ResponseEntity.ok(service.updateTask(id, task, assigneeId));
+        Long milestoneId = null;
+        if (body.containsKey("milestoneId") && body.get("milestoneId") != null) {
+            String milestoneToStr = body.get("milestoneId").toString();
+            if (milestoneToStr.startsWith("m")) {
+                milestoneToStr = milestoneToStr.substring(1);
+            }
+            milestoneId = Long.valueOf(milestoneToStr);
+        }
+        
+        return ResponseEntity.ok(service.updateTask(id, task, assigneeId, milestoneId));
     }
 
     @DeleteMapping("/{id}")
