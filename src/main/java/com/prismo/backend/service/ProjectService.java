@@ -77,13 +77,33 @@ public class ProjectService {
         return repository.save(project);
     }
 
+    private final com.prismo.backend.repository.IssueCommentRepository issueCommentRepository;
+    private final com.prismo.backend.repository.IssueMeetingRepository issueMeetingRepository;
+
     @Transactional
     public void deleteProject(Long id) {
+        // 1. Delete associated site issues along with comments & meetings
+        var issues = issueRepository.findByProjectId(id);
+        for (var issue : issues) {
+            issueCommentRepository.deleteAll(issueCommentRepository.findByIssueIdOrderByCreatedAtAsc(issue.getId()));
+            issueMeetingRepository.deleteAll(issueMeetingRepository.findByIssueIdOrderByCreatedAtAsc(issue.getId()));
+        }
+        issueRepository.deleteAll(issues);
+
+        // 2. Clear task references on progress logs if any, or delete logs
+        var logs = logRepository.findByProjectId(id);
+        logRepository.deleteAll(logs);
+
+        // 3. Delete tasks
         taskRepository.deleteAll(taskRepository.findByProjectId(id));
+
+        // 4. Delete approval requests
         approvalRepository.deleteAll(approvalRepository.findByProjectId(id));
-        issueRepository.deleteAll(issueRepository.findByProjectId(id));
-        logRepository.deleteAll(logRepository.findByProjectId(id));
+
+        // 5. Delete documents
         documentRepository.deleteAll(documentRepository.findByProjectId(id));
+
+        // 6. Delete project itself (cascades milestones)
         repository.deleteById(id);
     }
 }
