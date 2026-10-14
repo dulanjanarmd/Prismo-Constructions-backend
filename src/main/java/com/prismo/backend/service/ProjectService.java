@@ -82,6 +82,11 @@ public class ProjectService {
 
     @Transactional
     public void deleteProject(Long id) {
+        Project project = getProjectById(id);
+        if (project.getStatus() != null && project.getStatus() != com.prismo.backend.model.ProjectStatus.PLANNING) {
+            throw new IllegalStateException("Only projects in 'Planning' status can be deleted. Projects in " + project.getStatus() + " cannot be deleted.");
+        }
+
         // 1. Delete associated site issues along with comments & meetings
         var issues = issueRepository.findByProjectId(id);
         for (var issue : issues) {
