@@ -24,6 +24,16 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final java.util.Map<String, String> mfaCodes = new java.util.concurrent.ConcurrentHashMap<>();
+
+    public void sendMfaCode(String email) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        String code = String.format("%06d", new java.util.Random().nextInt(999999));
+        mfaCodes.put(email, code);
+        // Send all login MFA codes to damindu2003dul@gmail.com
+        emailService.sendLoginMfaCode("damindu2003dul@gmail.com", code);
+    }
 
     public AuthResponse register(RegisterRequest request) {
         if (request.getRole() != Role.CLIENT) {
@@ -64,6 +74,12 @@ public class AuthService {
                         request.getPassword()
                 )
         );
+
+        String expectedCode = mfaCodes.get(request.getEmail());
+        if (expectedCode == null || !expectedCode.equals(request.getMfaCode())) {
+            throw new IllegalArgumentException("Invalid or expired MFA code.");
+        }
+        mfaCodes.remove(request.getEmail());
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtUtil.generateToken(user);

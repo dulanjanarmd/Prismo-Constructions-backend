@@ -32,6 +32,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             System.out.println("Could not alter users table: " + e.getMessage());
         }
         
+
+        
         try {
             jdbcTemplate.execute("ALTER TABLE users ADD COLUMN status VARCHAR(20) DEFAULT 'ACTIVE'");
         } catch (Exception e) {
@@ -50,22 +52,16 @@ public class DatabaseSeeder implements CommandLineRunner {
             System.out.println("Could not drop global_messages table: " + e.getMessage());
         }
 
-        if (userRepository.findByEmail("admin@prismo.com").isEmpty()) {
-            String defaultPassword = passwordEncoder.encode("password123");
-            User admin = User.builder().name("System Admin").email("admin@prismo.com").password(defaultPassword).role(Role.ADMIN).status(UserStatus.ACTIVE).build();
-            userRepository.save(admin);
-            System.out.println("Admin user force seeded.");
-        } else {
-            var admin = userRepository.findByEmail("admin@prismo.com").get();
-            if (admin.getStatus() == null) {
-                admin.setStatus(UserStatus.ACTIVE);
-                userRepository.save(admin);
-                System.out.println("Admin user status updated.");
+        List<User> existingUsers = userRepository.findAll();
+        for (User u : existingUsers) {
+            if (u.getPassword() == null || !u.getPassword().startsWith("$2")) {
+                u.setPassword(passwordEncoder.encode("Prismo@2026"));
+                userRepository.save(u);
             }
         }
-        
+
         if (userRepository.count() <= 1) {
-            String defaultPassword = passwordEncoder.encode("password123");
+            String defaultPassword = passwordEncoder.encode("Prismo@2026");
 
             User ceo = User.builder().name("CEO User").email("ceo@prismo.com").password(defaultPassword).role(Role.CEO).status(UserStatus.ACTIVE).build();
             User admin = User.builder().name("System Admin").email("admin@prismo.com").password(defaultPassword).role(Role.ADMIN).status(UserStatus.ACTIVE).build();

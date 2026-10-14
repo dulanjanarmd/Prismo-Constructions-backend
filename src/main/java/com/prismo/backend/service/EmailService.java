@@ -25,4 +25,17 @@ public class EmailService {
             log.warn("Failed to send email to {} (Dummy credentials?): {}", to, e.getMessage());
         }
     }
+
+    public void sendLoginMfaCode(String to, String otp) {
+        log.info("Sending Login MFA OTP {} to {}", otp, to);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(to);
+            message.setSubject("Prismo Constructions - Login Verification Code");
+            message.setText("Your verification code for login is: " + otp + "\n\nThis code will expire in 10 minutes.");
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.warn("Failed to send MFA email to {}: {}", to, e.getMessage());
+        }
+    }
 }

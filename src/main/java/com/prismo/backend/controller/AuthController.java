@@ -20,4 +20,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
+
+    @PostMapping("/send-mfa")
+    public ResponseEntity<String> sendMfa(@RequestBody java.util.Map<String, String> request) {
+        service.sendMfaCode(request.get("email"));
+        return ResponseEntity.ok("MFA code sent");
+    }
 }
