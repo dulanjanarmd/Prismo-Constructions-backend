@@ -47,9 +47,21 @@ public class ProgressService {
         log.setProject(project);
         log.setSiteEngineer(engineer);
         
+        if (log.getDate() != null) {
+            if (project.getStartDate() != null && log.getDate().isBefore(project.getStartDate())) {
+                throw new IllegalArgumentException("Log date cannot be before project start date (" + project.getStartDate() + ")");
+            }
+            if (project.getEndDate() != null && log.getDate().isAfter(project.getEndDate())) {
+                throw new IllegalArgumentException("Log date cannot be after project end date (" + project.getEndDate() + ")");
+            }
+        }
+        
         if (taskId != null) {
             Task task = taskRepository.findById(taskId).orElse(null);
             log.setTask(task);
+            if (task != null && log.getDate() != null && task.getDueDate() != null && log.getDate().isAfter(task.getDueDate())) {
+                throw new IllegalArgumentException("Log date cannot be after task due date (" + task.getDueDate() + ")");
+            }
         }
         if (log.getPhotos() != null) {
             log.getPhotos().forEach(photo -> photo.setProgressLog(log));
@@ -80,9 +92,22 @@ public class ProgressService {
         existingLog.setSafetyIncidents(updatedLog.getSafetyIncidents());
         existingLog.setDelayHours(updatedLog.getDelayHours());
 
+        Project project = existingLog.getProject();
+        if (updatedLog.getDate() != null && project != null) {
+            if (project.getStartDate() != null && updatedLog.getDate().isBefore(project.getStartDate())) {
+                throw new IllegalArgumentException("Log date cannot be before project start date (" + project.getStartDate() + ")");
+            }
+            if (project.getEndDate() != null && updatedLog.getDate().isAfter(project.getEndDate())) {
+                throw new IllegalArgumentException("Log date cannot be after project end date (" + project.getEndDate() + ")");
+            }
+        }
+
         if (taskId != null) {
             Task task = taskRepository.findById(taskId).orElse(null);
             existingLog.setTask(task);
+            if (task != null && updatedLog.getDate() != null && task.getDueDate() != null && updatedLog.getDate().isAfter(task.getDueDate())) {
+                throw new IllegalArgumentException("Log date cannot be after task due date (" + task.getDueDate() + ")");
+            }
         } else {
             existingLog.setTask(null);
         }

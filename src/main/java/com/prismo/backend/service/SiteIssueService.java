@@ -87,11 +87,15 @@ public class SiteIssueService {
 
     @org.springframework.transaction.annotation.Transactional
     public void deleteIssue(Long issueId) {
+        SiteIssue issue = repository.findById(issueId).orElseThrow();
+        if (!"OPEN".equalsIgnoreCase(issue.getStatus())) {
+            throw new IllegalStateException("Only issues with OPEN status can be deleted.");
+        }
         List<com.prismo.backend.model.IssueComment> comments = commentRepo.findByIssueIdOrderByCreatedAtAsc(issueId);
         commentRepo.deleteAll(comments);
         List<com.prismo.backend.model.IssueMeeting> meetings = meetingRepo.findByIssueIdOrderByCreatedAtAsc(issueId);
         meetingRepo.deleteAll(meetings);
-        repository.deleteById(issueId);
+        repository.delete(issue);
     }
 
     public SiteIssue updateIssue(Long issueId, SiteIssue updatedData) {
@@ -113,6 +117,11 @@ public class SiteIssueService {
     public com.prismo.backend.model.IssueComment addComment(Long issueId, Long senderId, com.prismo.backend.model.IssueComment comment) {
         SiteIssue issue = repository.findById(issueId).orElseThrow();
         User sender = userRepository.findById(senderId).orElseThrow();
+        if ("SOLUTION".equalsIgnoreCase(comment.getCommentType())) {
+            if (issue.getReportedBy() != null && issue.getReportedBy().getId().equals(senderId)) {
+                throw new IllegalArgumentException("Issue creator cannot provide a solution to their own issue.");
+            }
+        }
         comment.setIssue(issue);
         comment.setSender(sender);
         return commentRepo.save(comment);
